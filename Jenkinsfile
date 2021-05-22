@@ -23,7 +23,7 @@ pipeline {
             steps {
                 echo 'Starting to build the project builder docker image'
 				echo "${ACCOUNT_REGISTRY_PREFIX}/example-webapp-builder:${GIT_COMMIT_HASH} -f ./Dockerfile.builder ."
-				sh 'docker build -t ${ACCOUNT_REGISTRY_PREFIX}/example-webapp-builder:${GIT_COMMIT_HASH} -f ./Dockerfile.builder .'
+				sh 'docker build -t 471959854276.dkr.ecr.us-east-1.amazonaws.com/example-webapp-builder:0927603a6c981874dcab2217790a83bd7bf9d118 -f ./Dockerfile.builder .'
 				/*
                 script {
                     builderImage = docker.build("${ACCOUNT_REGISTRY_PREFIX}/example-webapp-builder:${GIT_COMMIT_HASH}", " -f ./Dockerfile.builder .")
