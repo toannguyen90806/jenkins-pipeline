@@ -22,21 +22,9 @@ pipeline {
         stage('Make A Builder Image') {
             steps {
                 echo 'Starting to build the project builder docker image'
-				sh 'docker build -t 471959854276.dkr.ecr.us-east-1.amazonaws.com/example-webapp-builder:0927603a6c981874dcab2217790a83bd7bf9d118 -f Dockerfile.builder .'
-				
-				echo 'docker push to example-webapp-builder'
-				sh 'docker push 471959854276.dkr.ecr.us-east-1.amazonaws.com/example-webapp-builder:0927603a6c981874dcab2217790a83bd7bf9d118'
-				
-				sh 'docker run --rm -v "$PWD:/work" 471959854276.dkr.ecr.us-east-1.amazonaws.com/example-webapp-builder:0927603a6c981874dcab2217790a83bd7bf9d118 bash -c "cd /work; lein uberjar"'
-				
-				//echo "${ACCOUNT_REGISTRY_PREFIX}/example-webapp-builder:${GIT_COMMIT_HASH} -f ./Dockerfile.builder ."
-				//sh 'docker build -t 471959854276.dkr.ecr.us-east-1.amazonaws.com/example-webapp-builder:0927603a6c981874dcab2217790a83bd7bf9d118 -f ./Dockerfile.builder .'
-				
-				/*
                 script {
-                    builderImage = docker.build("${ACCOUNT_REGISTRY_PREFIX}/example-webapp-builder:${GIT_COMMIT_HASH}", " -f ./Dockerfile.builder .")
-                    echo 'Docker build image is OK'
-					builderImage.push()
+                    builderImage = docker.build("${ACCOUNT_REGISTRY_PREFIX}/example-webapp-builder:${GIT_COMMIT_HASH}", "-f ./Dockerfile.builder .")
+                    builderImage.push()
                     builderImage.push("${env.GIT_BRANCH}")
                     builderImage.inside('-v $WORKSPACE:/output -u root') {
                         sh """
@@ -45,15 +33,12 @@ pipeline {
                         """
                     }
                 }
-				*/
             }
         }
 
         stage('Unit Tests') {
             steps {
                 echo 'running unit tests in the builder image.'
-				sh 'docker run --rm -v "$PWD:/work" 471959854276.dkr.ecr.us-east-1.amazonaws.com/example-webapp-builder:0927603a6c981874dcab2217790a83bd7bf9d118 bash -c "cd /work; lein test"'
-				/*
                 script {
                     builderImage.inside('-v $WORKSPACE:/output -u root') {
                     sh """
@@ -62,29 +47,21 @@ pipeline {
                     """
                     }
                 }
-				*/
             }
         }
 
         stage('Build Production Image') {
             steps {
                 echo 'Starting to build docker image'
-				sh 'docker build -t 471959854276.dkr.ecr.us-east-1.amazonaws.com/example-webapp:0927603a6c981874dcab2217790a83bd7bf9d118 -f Dockerfile.builder .'
-				
-				echo 'docker push to example-webapp-builder'
-				sh 'docker push 471959854276.dkr.ecr.us-east-1.amazonaws.com/example-webapp:0927603a6c981874dcab2217790a83bd7bf9d118'
-				
-				/*
                 script {
                     productionImage = docker.build("${ACCOUNT_REGISTRY_PREFIX}/example-webapp:${GIT_COMMIT_HASH}")
                     productionImage.push()
                     productionImage.push("${env.GIT_BRANCH}")
                 }
-				*/
             }
         }
 
- 
+ /*
         stage('Deploy to Production fixed server') {
             when {
                 branch 'release'
@@ -99,6 +76,7 @@ pipeline {
                 }
             }
         }
+
 
 
         stage('Integration Tests') {
@@ -143,5 +121,6 @@ pipeline {
                 }
             }
         }
+*/
     }
 }
