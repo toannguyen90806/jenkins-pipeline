@@ -22,8 +22,16 @@ pipeline {
         stage('Make A Builder Image') {
             steps {
                 echo 'Starting to build the project builder docker image'
-				echo "${ACCOUNT_REGISTRY_PREFIX}/example-webapp-builder:${GIT_COMMIT_HASH} -f ./Dockerfile.builder ."
-				sh 'docker build -t 471959854276.dkr.ecr.us-east-1.amazonaws.com/example-webapp-builder:0927603a6c981874dcab2217790a83bd7bf9d118 -f ./Dockerfile.builder .'
+				sh 'docker build -t 471959854276.dkr.ecr.us-east-1.amazonaws.com/example-webapp-builder:$(git rev-parse HEAD) -f Dockerfile.builder .'
+				
+				echo 'docker push to example-webapp-builder'
+				sh 'docker push 471959854276.dkr.ecr.us-east-1.amazonaws.com/example-webapp-builder:$(git rev-parse HEAD)'
+				
+				sh 'docker run --rm -v "$PWD:/work" 471959854276.dkr.ecr.us-east-1.amazonaws.com/example-webapp-builder:$(git rev-parse HEAD) bash -c "cd /work; lein uberjar"'
+				
+				//echo "${ACCOUNT_REGISTRY_PREFIX}/example-webapp-builder:${GIT_COMMIT_HASH} -f ./Dockerfile.builder ."
+				//sh 'docker build -t 471959854276.dkr.ecr.us-east-1.amazonaws.com/example-webapp-builder:0927603a6c981874dcab2217790a83bd7bf9d118 -f ./Dockerfile.builder .'
+				
 				/*
                 script {
                     builderImage = docker.build("${ACCOUNT_REGISTRY_PREFIX}/example-webapp-builder:${GIT_COMMIT_HASH}", " -f ./Dockerfile.builder .")
@@ -44,6 +52,8 @@ pipeline {
         stage('Unit Tests') {
             steps {
                 echo 'running unit tests in the builder image.'
+				sh 'docker run --rm -v "$PWD:/work" 471959854276.dkr.ecr.us-east-1.amazonaws.com/example-webapp-builder:$(git rev-parse HEAD) bash -c "cd /work; lein test"'
+				/*
                 script {
                     builderImage.inside('-v $WORKSPACE:/output -u root') {
                     sh """
@@ -52,6 +62,7 @@ pipeline {
                     """
                     }
                 }
+				*/
             }
         }
 
