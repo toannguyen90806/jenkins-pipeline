@@ -25,7 +25,8 @@ pipeline {
 				echo "${ACCOUNT_REGISTRY_PREFIX}/example-webapp-builder:${GIT_COMMIT_HASH} -f ./Dockerfile.builder ."
                 script {
                     builderImage = docker.build("${ACCOUNT_REGISTRY_PREFIX}/example-webapp-builder:${GIT_COMMIT_HASH}", "-f ./Dockerfile.builder .")
-                    builderImage.push()
+                    echo 'Docker build image is OK'
+					builderImage.push()
                     builderImage.push("${env.GIT_BRANCH}")
                     builderImage.inside('-v $WORKSPACE:/output -u root') {
                         sh """
