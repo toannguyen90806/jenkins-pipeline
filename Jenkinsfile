@@ -96,14 +96,14 @@ pipeline {
                        aws ec2 reboot-instances --region us-east-1 --instance-ids i-0f2a0b0d28bd6c44e
                     """
 					
-				/*
+				
                 script {
                     productionImage.push("deploy")
                     sh """
                        aws ec2 reboot-instances --region us-east-1 --instance-ids i-0f2a0b0d28bd6c44e
                     """
                 }
-				*/
+				
             }
         }
 
