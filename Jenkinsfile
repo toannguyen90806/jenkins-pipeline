@@ -84,23 +84,30 @@ pipeline {
             }
         }
 
- /*
+ 
         stage('Deploy to Production fixed server') {
             when {
                 branch 'release'
             }
             steps {
                 echo 'Deploying release to production'
+				sh 'docker push 471959854276.dkr.ecr.us-east-1.amazonaws.com/example-webapp:deploy'
+				sh """
+                       aws ec2 reboot-instances --region us-east-1 --instance-ids i-0f2a0b0d28bd6c44e
+                    """
+					
+				/*
                 script {
                     productionImage.push("deploy")
                     sh """
-                       aws ec2 reboot-instances --region us-east-1 --instance-ids i-0e438e2bf64427c9d
+                       aws ec2 reboot-instances --region us-east-1 --instance-ids i-0f2a0b0d28bd6c44e
                     """
                 }
+				*/
             }
         }
 
-
+/*
         stage('Integration Tests') {
             when {
                 branch 'master'
